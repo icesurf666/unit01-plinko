@@ -1,0 +1,14 @@
+# Local Postgres for development (ADR-2, double-entry ledger).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: plinko
+      POSTGRES_PASSWORD: plinko
+      POSTGRES_DB: plinko
+    ports:
+      - '5432:5432'
+    volumes:
+      - plinko_pg:/var/lib/postgresql/data
+volumes:
+  plinko_pg:
