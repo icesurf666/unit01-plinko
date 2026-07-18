@@ -1,0 +1,17 @@
+{
+  "name": "unit01-plinko",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.33.0",
+  "description": "UNIT-01 Plinko — GambleFi plinko (hybrid on-chain/off-chain, provably fair)",
+  "scripts": {
+    "build:shared": "pnpm --filter @plinko/shared build",
+    "dev:server": "pnpm --filter @plinko/server dev",
+    "dev:web": "pnpm --filter @plinko/web dev",
+    "dev": "pnpm build:shared && concurrently -n server,web -c green,magenta \"pnpm dev:server\" \"pnpm dev:web\"",
+    "build": "pnpm build:shared && pnpm --filter @plinko/server build && pnpm --filter @plinko/web build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
