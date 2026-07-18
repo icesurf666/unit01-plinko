@@ -1,0 +1,12 @@
+{
+  "name": "@plinko/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "PlinkoVault + UNIT token — Solidity/Foundry, Base Sepolia",
+  "scripts": {
+    "build": "forge build",
+    "test": "forge test -vv",
+    "fmt": "forge fmt",
+    "deploy:base-sepolia": "forge script script/Deploy.s.sol:Deploy --rpc-url base_sepolia --broadcast --verify"
+  }
+}
