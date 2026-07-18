@@ -1,0 +1,49 @@
+# Render Blueprint — UNIT-01 Plinko server (NestJS + ws + indexer).
+# pnpm is already installed on Render; corepack enable is NOT needed (it fails on the RO /usr/bin).
+services:
+  - type: web
+    name: unit01-plinko
+    runtime: node
+    plan: free
+    buildCommand: pnpm install && pnpm --filter @plinko/server build
+    startCommand: node apps/server/dist/main.js
+    envVars:
+      - key: CHAIN_ID
+        value: "84532"
+      - key: CONFIRMATIONS
+        value: "2"
+      - key: START_BLOCK
+        value: "0"
+      - key: START_BALANCE
+        value: "1000"
+      - key: JWT_TTL_SEC
+        value: "86400"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "60000"
+      - key: RATE_LIMIT_MAX
+        value: "120"
+      - key: VAULT_ADDRESS
+        value: "0x41408D9A4987428EdA217aF5e6C9C5BE06680E9E"
+      - key: TOKEN_ADDRESS
+        value: "0xf9Ea47bebfbF8B51040d342a1EAdbd6E19381fc7"
+      # Set these to the deployed frontend origin, for example:
+      # CORS_ORIGINS=https://unit01-plinko.vercel.app
+      # SIWE_DOMAIN=unit01-plinko.vercel.app
+      # SIWE_URI=https://unit01-plinko.vercel.app
+      - key: CORS_ORIGINS
+        sync: false
+      - key: SIWE_DOMAIN
+        sync: false
+      - key: SIWE_URI
+        sync: false
+      # secrets — set in the dashboard (Environment), not committed to the repo:
+      - key: RPC_URL
+        sync: false
+      - key: TRUSTED_SIGNER_PK
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: DATABASE_URL
+        sync: false
