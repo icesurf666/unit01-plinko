@@ -220,10 +220,10 @@ under `plinko/`.
 
 ## Deployment Notes
 
-- `render.yaml` contains a Render blueprint for the NestJS server.
+- `render.yaml` contains a Render blueprint for the NestJS server and a Postgres ledger database.
 - Render-specific env checklist: [`docs/RENDER_DEPLOYMENT.md`](docs/RENDER_DEPLOYMENT.md).
 - The web app can be deployed separately to Vercel or any Next.js-compatible host.
-- Production deployments should use Postgres by setting `DATABASE_URL`.
+- Production deployments should use Postgres; the Render blueprint wires `DATABASE_URL` automatically.
 - The server signer must match the `trustedSigner` configured in `PlinkoVault`.
 - `CORS_ORIGINS`, `SIWE_DOMAIN`, and `SIWE_URI` must match the deployed frontend.
 - `JWT_SECRET`, `RPC_URL`, and `TRUSTED_SIGNER_PK` must be set as deployment secrets.

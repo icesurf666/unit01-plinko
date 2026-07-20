@@ -1,4 +1,4 @@
-# Render Blueprint — UNIT-01 Plinko server (NestJS + ws + indexer).
+# Render Blueprint — UNIT-01 Plinko server (NestJS + ws + indexer + Postgres ledger).
 # pnpm is already installed on Render; corepack enable is NOT needed (it fails on the RO /usr/bin).
 services:
   - type: web
@@ -55,7 +55,14 @@ services:
       - key: REDIS_URL
         sync: false
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: unit01-plinko-db
+          property: connectionString
       # Demo only. Prefer DATABASE_URL for a persistent ledger.
       - key: ALLOW_MEMORY_STORE_IN_PRODUCTION
         sync: false
+
+databases:
+  - name: unit01-plinko-db
+    databaseName: unit01_plinko
+    user: unit01_plinko

@@ -26,19 +26,27 @@ openssl rand -hex 32
 
 ## Store Mode
 
-Use one of these modes:
+The included `render.yaml` provisions a Postgres database named
+`unit01-plinko-db` and wires its internal connection string into `DATABASE_URL`.
+That is the recommended mode because player ledger balances and feed history
+survive restarts and redeploys.
+
+For a manually configured Render service, set:
 
 ```bash
 # Production-like persistent ledger
 DATABASE_URL=<render postgres internal database url>
 ```
 
-or:
+Only use the in-memory store for a disposable demo:
 
 ```bash
 # Demo only: in-memory ledger, resets on restart/redeploy
 ALLOW_MEMORY_STORE_IN_PRODUCTION=true
 ```
+
+Do not set both modes intentionally. If `DATABASE_URL` is present, the server
+uses the Postgres ledger and ignores the memory-store flag.
 
 Redis is optional. If you did not provision Redis, delete `REDIS_URL` from the
 Render environment instead of leaving a placeholder value. A bad Redis URL can
@@ -70,6 +78,10 @@ Error: Missing required production env: JWT_SECRET, CORS_ORIGINS, SIWE_DOMAIN, S
 ```
 
 the service is deployed without the required runtime env vars. Add them in Render and redeploy. If the next error mentions `DATABASE_URL`, either attach Postgres or explicitly set `ALLOW_MEMORY_STORE_IN_PRODUCTION=true` for a demo deployment.
+
+If balances or history reset after redeploy, the server is running on the
+in-memory store. Attach Postgres or deploy from the blueprint so
+`DATABASE_URL` is populated.
 
 If browser logs show CORS errors from Vercel, set `CORS_ORIGINS` to the exact
 browser origin shown in the error, without a trailing slash. For the current
