@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { verifyFairDrop, type Risk, type VerifiedDrop } from '@plinko/shared';
-import { parseIntegerInput } from '@/shared/lib/number';
+import { parseNonceInput } from './nonceInput';
 
 export interface FairnessVerifierFields {
   serverSeed: string;
@@ -26,10 +26,6 @@ export interface FairnessVerifierState {
   result: VerifiedDrop | null;
   error: string;
   actions: FairnessVerifierActions;
-}
-
-function parseNonceInput(value: string): number {
-  return parseIntegerInput(value, { min: 0, fallback: 0 });
 }
 
 export function useFairnessVerifier(): FairnessVerifierState {
