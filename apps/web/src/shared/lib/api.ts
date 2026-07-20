@@ -35,6 +35,10 @@ export class ApiError extends Error {
 
 export { isSignedInAs, signedInWallet };
 
+export function hasActiveSession(): boolean {
+  return hasUsableAuthToken(getAuthToken());
+}
+
 export function signOut(): void {
   clearAuthToken();
 }
@@ -63,8 +67,13 @@ export async function ensureSession(address?: string): Promise<void> {
   const payload = decodeAuthToken(token);
   if (address && payload?.kind === 'guest' && hasUsableAuthToken(token)) return;
 
+  throw new ApiError('Start demo mode or sign in with your wallet first.', 401);
+}
+
+export async function startDemoSession(): Promise<AuthTokenResult> {
   const guest = await request<AuthTokenResult>('/auth/guest', { method: 'POST' });
   setAuthToken(guest.token);
+  return guest;
 }
 
 export async function signInWithWallet(

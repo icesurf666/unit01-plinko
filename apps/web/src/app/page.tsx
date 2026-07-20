@@ -22,6 +22,11 @@ export default function Page() {
   const [error, setError] = useState('');
 
   async function refreshBalance() {
+    if (!api.hasActiveSession()) {
+      setBalance(0);
+      return;
+    }
+
     try {
       const me = await api.getMe(address);
       setBalance(me.balance);
@@ -30,9 +35,14 @@ export default function Page() {
     }
   }
 
-  // Read the guest or signed wallet balance whenever the wallet changes.
+  // Read the explicit demo or signed wallet balance whenever the wallet changes.
   useEffect(() => {
     let cancelled = false;
+    if (!api.hasActiveSession()) {
+      setBalance(0);
+      return;
+    }
+
     api
       .getMe(address)
       .then((me) => {
@@ -49,6 +59,11 @@ export default function Page() {
   async function handleDrop() {
     initAudio(); // arm audio after a user gesture
     setError('');
+    if (!api.hasActiveSession()) {
+      setError('Start demo mode or sign in with your wallet first.');
+      return;
+    }
+
     const { balance, stake, risk: r } = useGameStore.getState();
     if (balance < stake) return;
     try {

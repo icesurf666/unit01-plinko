@@ -40,6 +40,9 @@ triangle of pegs. The server resolves the result deterministically from the
 current seed context, returns the path and payout, and the PixiJS board animates
 that already-decided outcome.
 
+Players can explicitly start a guest demo session for free credits, or sign in
+with a wallet and deposit testnet UNIT into the off-chain playable ledger.
+
 Payout is calculated as:
 
 ```text

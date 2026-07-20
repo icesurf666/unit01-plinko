@@ -444,6 +444,11 @@ a {
   color: var(--text-dim);
   font-size: 0.8rem;
 }
+.wallet-note {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
 .auth-state {
   border: 1px solid var(--glass-stroke);
   border-radius: 10px;
@@ -467,6 +472,20 @@ a {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   padding: 9px;
+}
+.signbtn.demo {
+  border-color: var(--glass-stroke-hi);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-mid);
+}
+.signbtn.demo:hover {
+  color: var(--secondary-soft);
+  border-color: var(--secondary);
+}
+.wp-session-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
 }
 .wp-row {
   display: flex;
