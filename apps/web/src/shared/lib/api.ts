@@ -11,10 +11,10 @@ import {
 import {
   clearAuthToken,
   currentAuthSession,
-  decodeAuthToken,
   getAuthToken,
   hasUsableAuthToken,
   isSignedInAs,
+  sessionMatchesAddress,
   setAuthToken,
   signedInWallet,
 } from './auth-session';
@@ -35,10 +35,10 @@ export class ApiError extends Error {
   }
 }
 
-export { currentAuthSession, isSignedInAs, signedInWallet };
+export { currentAuthSession, isSignedInAs, sessionMatchesAddress, signedInWallet };
 
-export function hasActiveSession(): boolean {
-  return hasUsableAuthToken(getAuthToken());
+export function hasActiveSession(address?: string): boolean {
+  return sessionMatchesAddress(address);
 }
 
 export function signOut(): void {
@@ -63,11 +63,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export async function ensureSession(address?: string): Promise<void> {
   const token = getAuthToken();
-  if (address && isSignedInAs(address)) return;
-  if (!address && hasUsableAuthToken(token)) return;
-
-  const payload = decodeAuthToken(token);
-  if (address && payload?.kind === 'guest' && hasUsableAuthToken(token)) return;
+  if (hasUsableAuthToken(token) && sessionMatchesAddress(address)) return;
 
   throw new ApiError(MISSING_SESSION_MESSAGE, 401);
 }
@@ -93,28 +89,27 @@ export async function signInWithWallet(
   return session;
 }
 
-async function authHeaders(): Promise<Record<string, string>> {
-  await ensureSession();
+async function authHeaders(address?: string): Promise<Record<string, string>> {
+  await ensureSession(address);
   const token = getAuthToken();
   if (!token) throw new ApiError('Missing auth token.', 401);
   return { authorization: `Bearer ${token}` };
 }
 
-async function jsonHeaders(): Promise<Record<string, string>> {
-  return { 'content-type': 'application/json', ...(await authHeaders()) };
+async function jsonHeaders(address?: string): Promise<Record<string, string>> {
+  return { 'content-type': 'application/json', ...(await authHeaders(address)) };
 }
 
-export async function drop(stake: number, risk: Risk): Promise<DropResult> {
+export async function drop(stake: number, risk: Risk, address?: string): Promise<DropResult> {
   return request<DropResult>('/drop', {
     method: 'POST',
-    headers: await jsonHeaders(),
+    headers: await jsonHeaders(address),
     body: JSON.stringify({ stake, risk }),
   });
 }
 
 export async function getMe(address?: string): Promise<MeResult> {
-  await ensureSession(address);
-  return request<MeResult>('/me', { headers: await authHeaders() });
+  return request<MeResult>('/me', { headers: await authHeaders(address) });
 }
 
 export async function getFeedHistory(): Promise<FeedDrop[]> {

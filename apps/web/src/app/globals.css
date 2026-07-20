@@ -462,6 +462,11 @@ a {
   border-color: rgba(157, 255, 0, 0.35);
   background: rgba(157, 255, 0, 0.08);
 }
+.auth-state.warn {
+  color: #ffd166;
+  border-color: rgba(255, 209, 102, 0.36);
+  background: rgba(255, 209, 102, 0.08);
+}
 .session-state {
   display: flex;
   align-items: center;

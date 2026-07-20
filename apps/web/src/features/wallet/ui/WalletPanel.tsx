@@ -19,7 +19,7 @@ export function WalletPanel({
   onSessionChanged?: () => void | Promise<void>;
   onError?: (message: string) => void;
 }) {
-  const { connected, authenticated, status, signIn, faucet, deposit, withdraw } = useVault();
+  const { address, connected, authenticated, status, signIn, faucet, deposit, withdraw } = useVault();
   const refreshTimers = useRef<number[]>([]);
   const [session, setSession] = useState(() => currentAuthSession());
   const [sessionStatus, setSessionStatus] = useState('');
@@ -88,6 +88,9 @@ export function WalletPanel({
       : session?.kind === 'guest'
         ? 'Demo session active'
         : null;
+  const walletSessionMismatch = Boolean(
+    address && session?.kind === 'wallet' && session.wallet && !authenticated,
+  );
 
   if (!connected) {
     return (
@@ -113,8 +116,12 @@ export function WalletPanel({
 
   return (
     <div className="wallet-panel">
-      <div className={`auth-state ${authenticated ? 'ok' : ''}`}>
-        {authenticated ? 'Wallet signed in' : 'Wallet connected. Sign a SIWE message to use vault actions.'}
+      <div className={`auth-state ${authenticated ? 'ok' : walletSessionMismatch ? 'warn' : ''}`}>
+        {authenticated
+          ? 'Wallet signed in'
+          : walletSessionMismatch
+            ? 'Wallet switched. Sign in with this wallet or sign out the old session.'
+            : 'Wallet connected. Sign a SIWE message to use vault actions.'}
       </div>
       {sessionLabel && (
         <div className="session-state">

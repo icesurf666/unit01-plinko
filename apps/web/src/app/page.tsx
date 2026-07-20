@@ -22,7 +22,7 @@ export default function Page() {
   const [error, setError] = useState('');
 
   async function refreshBalance() {
-    if (!api.hasActiveSession()) {
+    if (!api.hasActiveSession(address)) {
       setBalance(0);
       return;
     }
@@ -38,7 +38,7 @@ export default function Page() {
   // Read the explicit demo or signed wallet balance whenever the wallet changes.
   useEffect(() => {
     let cancelled = false;
-    if (!api.hasActiveSession()) {
+    if (!api.hasActiveSession(address)) {
       setBalance(0);
       return;
     }
@@ -59,7 +59,7 @@ export default function Page() {
   async function handleDrop() {
     initAudio(); // arm audio after a user gesture
     setError('');
-    if (!api.hasActiveSession()) {
+    if (!api.hasActiveSession(address)) {
       setError(api.MISSING_SESSION_MESSAGE);
       return;
     }
@@ -67,7 +67,7 @@ export default function Page() {
     const { balance, stake, risk: r } = useGameStore.getState();
     if (balance < stake) return;
     try {
-      const res = await api.drop(stake, r);
+      const res = await api.drop(stake, r, address);
       // update the balance when the ball lands — more dramatic
       launchBall(res.path, res.bucket, res.multiplier, () => setBalance(res.balance));
     } catch (e) {

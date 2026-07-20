@@ -75,6 +75,19 @@ export function signedInWallet(): string | null {
   return session?.kind === 'wallet' && session.wallet ? session.wallet : null;
 }
 
+export function sessionMatchesAddress(address?: string): boolean {
+  const session = currentAuthSession();
+  if (!session) return false;
+  if (!address || session.kind === 'guest') return true;
+  if (session.kind !== 'wallet' || !session.wallet) return false;
+
+  try {
+    return normalizeEvmAddress(session.wallet) === normalizeEvmAddress(address);
+  } catch {
+    return false;
+  }
+}
+
 export function isSignedInAs(address?: string): boolean {
   if (!address) return false;
   try {
