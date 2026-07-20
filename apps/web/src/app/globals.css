@@ -516,8 +516,8 @@ a {
 }
 .feed-row {
   display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) 52px 58px;
+  gap: 8px;
   align-items: center;
   font-family: var(--font-mono);
   font-size: 0.82rem;
@@ -526,10 +526,36 @@ a {
   animation: rowin 0.24s var(--ease-out);
 }
 .feed-row .addr {
+  min-width: 0;
+  appearance: none;
+  border: 0;
+  background: transparent;
   color: var(--text-mid);
+  cursor: copy;
+  font: inherit;
+  overflow: hidden;
+  padding: 0;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.feed-row .addr:disabled {
+  cursor: default;
+}
+.feed-row .addr:hover:not(:disabled),
+.feed-row .addr:focus-visible {
+  color: var(--accent);
+  outline: none;
 }
 .feed-row.win .mult {
   color: var(--accent);
+}
+.feed-row .mult,
+.feed-row .pnl {
+  text-align: right;
+}
+.feed-row .pnl.pos {
+  color: var(--text-hi);
 }
 .feed-row.big {
   background: #9dff0012;
