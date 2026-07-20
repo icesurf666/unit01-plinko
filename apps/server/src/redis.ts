@@ -13,8 +13,14 @@ type RedisSocket = Socket | TLSSocket;
 let warned = false;
 let disabledUntil = 0;
 
+function redisUrl(): string | null {
+  const raw = process.env.REDIS_URL?.trim();
+  if (!raw || ['false', 'null', 'undefined'].includes(raw.toLowerCase())) return null;
+  return raw;
+}
+
 export function redisEnabled(): boolean {
-  return Boolean(process.env.REDIS_URL);
+  return Boolean(redisUrl());
 }
 
 export function redisCircuitOpen(): boolean {
@@ -25,6 +31,7 @@ async function open(url: URL): Promise<RedisSocket> {
   const defaultPort = url.protocol === 'rediss:' ? 6380 : 6379;
   const port = url.port ? Number(url.port) : defaultPort;
   const host = url.hostname || '127.0.0.1';
+  const readyEvent = url.protocol === 'rediss:' ? 'secureConnect' : 'connect';
   const socket =
     url.protocol === 'rediss:'
       ? tlsConnect({ host, port, servername: host })
@@ -35,7 +42,7 @@ async function open(url: URL): Promise<RedisSocket> {
       socket.destroy();
       reject(new Error('Redis connection timed out.'));
     }, integerEnv('REDIS_CONNECT_TIMEOUT_MS', { defaultValue: 500, min: 50 }));
-    socket.once('connect', () => {
+    socket.once(readyEvent, () => {
       clearTimeout(timeout);
       resolve();
     });
@@ -48,9 +55,10 @@ async function open(url: URL): Promise<RedisSocket> {
 }
 
 async function rawCommand(parts: RedisCommandPart[]): Promise<RedisScalar> {
-  if (!process.env.REDIS_URL) return null;
+  const configuredUrl = redisUrl();
+  if (!configuredUrl) return null;
   if (Date.now() < disabledUntil) return null;
-  const url = new URL(process.env.REDIS_URL);
+  const url = new URL(configuredUrl);
   const socket = await open(url);
   try {
     if (url.password) {
@@ -74,7 +82,13 @@ async function rawCommand(parts: RedisCommandPart[]): Promise<RedisScalar> {
 function writeCommand(socket: RedisSocket, parts: RedisCommandPart[]): Promise<RedisScalar> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
+    const timeout = setTimeout(() => {
+      cleanup();
+      socket.destroy();
+      reject(new Error('Redis command timed out.'));
+    }, integerEnv('REDIS_COMMAND_TIMEOUT_MS', { defaultValue: 500, min: 50 }));
     const cleanup = () => {
+      clearTimeout(timeout);
       socket.off('data', onData);
       socket.off('error', onError);
     };

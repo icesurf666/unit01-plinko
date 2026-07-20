@@ -25,6 +25,12 @@ services:
         value: "60000"
       - key: RATE_LIMIT_MAX
         value: "120"
+      - key: REDIS_CONNECT_TIMEOUT_MS
+        value: "500"
+      - key: REDIS_COMMAND_TIMEOUT_MS
+        value: "500"
+      - key: REDIS_RETRY_AFTER_MS
+        value: "30000"
       - key: VAULT_ADDRESS
         value: "0x41408D9A4987428EdA217aF5e6C9C5BE06680E9E"
       - key: TOKEN_ADDRESS

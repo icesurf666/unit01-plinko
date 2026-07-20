@@ -40,6 +40,10 @@ or:
 ALLOW_MEMORY_STORE_IN_PRODUCTION=true
 ```
 
+Redis is optional. If you did not provision Redis, delete `REDIS_URL` from the
+Render environment instead of leaving a placeholder value. A bad Redis URL can
+slow auth nonce creation until the client falls back to memory.
+
 ## Frontend Env Vars
 
 The web app must point at the Render API:
