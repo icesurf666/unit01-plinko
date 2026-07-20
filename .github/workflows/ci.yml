@@ -40,6 +40,9 @@ jobs:
       - name: Build web
         run: pnpm --filter @plinko/web build
 
+      - name: Test web
+        run: pnpm --filter @plinko/web test
+
   contracts:
     name: contracts (Foundry)
     runs-on: ubuntu-latest

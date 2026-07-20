@@ -1,26 +1,10 @@
 'use client';
 
-import { formatUnits } from 'viem';
 import { useAccount, useReadContract } from 'wagmi';
 import { TOKEN_ADDRESS, ZERO_ADDRESS, tokenAbi } from './contracts';
+import { formatUnitBalance } from './formatUnitBalance';
 
-const UNIT_DECIMALS = 18;
 const BALANCE_REFRESH_MS = 10_000;
-
-function addThousandsSeparators(value: string): string {
-  return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-export function formatUnitBalance(balance?: bigint): string {
-  if (balance === undefined) return '0';
-
-  const [whole, fraction = ''] = formatUnits(balance, UNIT_DECIMALS).split('.');
-  const visibleFraction = fraction.slice(0, 2).replace(/0+$/, '');
-
-  return visibleFraction
-    ? `${addThousandsSeparators(whole)}.${visibleFraction}`
-    : addThousandsSeparators(whole);
-}
 
 export function useWalletUnitBalance() {
   const { address, isConnected } = useAccount();

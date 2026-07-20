@@ -206,6 +206,7 @@ Run backend and shared tests:
 ```bash
 pnpm --filter @plinko/server test
 pnpm --filter @plinko/shared test
+pnpm --filter @plinko/web test
 ```
 
 Run Solidity tests:
