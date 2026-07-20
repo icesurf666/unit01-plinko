@@ -23,6 +23,7 @@ function apiBaseUrl(): string {
 }
 
 const API = apiBaseUrl();
+export const MISSING_SESSION_MESSAGE = 'Start demo mode or sign in with your wallet first.';
 
 export class ApiError extends Error {
   constructor(
@@ -67,7 +68,7 @@ export async function ensureSession(address?: string): Promise<void> {
   const payload = decodeAuthToken(token);
   if (address && payload?.kind === 'guest' && hasUsableAuthToken(token)) return;
 
-  throw new ApiError('Start demo mode or sign in with your wallet first.', 401);
+  throw new ApiError(MISSING_SESSION_MESSAGE, 401);
 }
 
 export async function startDemoSession(): Promise<AuthTokenResult> {
@@ -116,7 +117,7 @@ export async function getMe(address?: string): Promise<MeResult> {
 }
 
 export async function getFeedHistory(): Promise<FeedDrop[]> {
-  return request<FeedDrop[]>('/feed', { headers: await authHeaders() });
+  return request<FeedDrop[]>('/feed');
 }
 
 /** Reserves the off-chain balance and returns an EIP-712 signature for Vault.withdraw. */

@@ -60,7 +60,7 @@ export default function Page() {
     initAudio(); // arm audio after a user gesture
     setError('');
     if (!api.hasActiveSession()) {
-      setError('Start demo mode or sign in with your wallet first.');
+      setError(api.MISSING_SESSION_MESSAGE);
       return;
     }
 
@@ -91,7 +91,7 @@ export default function Page() {
         </div>
         <aside className="side">
           <Controls onDrop={handleDrop} />
-          <WalletPanel onAuthenticated={refreshBalance} onError={setError} />
+          <WalletPanel onSessionChanged={refreshBalance} onError={setError} />
           <Feed />
         </aside>
       </div>

@@ -7,10 +7,10 @@ import { startDemoSession } from '@/shared/lib/api';
 import { parseIntegerInput } from '@/shared/lib/number';
 
 export function WalletPanel({
-  onAuthenticated,
+  onSessionChanged,
   onError,
 }: {
-  onAuthenticated?: () => void | Promise<void>;
+  onSessionChanged?: () => void | Promise<void>;
   onError?: (message: string) => void;
 }) {
   const { connected, authenticated, status, signIn, faucet, deposit, withdraw } = useVault();
@@ -21,12 +21,22 @@ export function WalletPanel({
     try {
       setDemoStatus('Starting demo...');
       await startDemoSession();
-      await onAuthenticated?.();
+      await onSessionChanged?.();
       setDemoStatus('Demo mode active');
     } catch (e) {
       const message = (e as Error).message;
       setDemoStatus(message);
       onError?.(message);
+    }
+  }
+
+  async function signInWallet() {
+    setDemoStatus('');
+    try {
+      const ok = await signIn();
+      if (ok) await onSessionChanged?.();
+    } catch (e) {
+      onError?.((e as Error).message);
     }
   }
 
@@ -50,16 +60,7 @@ export function WalletPanel({
       </div>
       {!authenticated && (
         <div className="wp-session-actions">
-          <button
-            className="signbtn"
-            onClick={() => {
-              signIn()
-                .then((ok) => {
-                  if (ok) void onAuthenticated?.();
-                })
-                .catch((e) => onError?.((e as Error).message));
-            }}
-          >
+          <button className="signbtn" onClick={() => void signInWallet()}>
             Sign in with Ethereum
           </button>
           <button className="signbtn demo" onClick={() => void startDemo()}>
