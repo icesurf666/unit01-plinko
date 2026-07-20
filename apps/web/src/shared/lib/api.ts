@@ -10,6 +10,7 @@ import {
 } from '@plinko/shared';
 import {
   clearAuthToken,
+  currentAuthSession,
   decodeAuthToken,
   getAuthToken,
   hasUsableAuthToken,
@@ -34,7 +35,7 @@ export class ApiError extends Error {
   }
 }
 
-export { isSignedInAs, signedInWallet };
+export { currentAuthSession, isSignedInAs, signedInWallet };
 
 export function hasActiveSession(): boolean {
   return hasUsableAuthToken(getAuthToken());

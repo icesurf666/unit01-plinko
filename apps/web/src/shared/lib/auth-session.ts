@@ -10,6 +10,13 @@ interface JwtPayload {
   kind?: 'guest' | 'wallet';
 }
 
+export interface AuthSession {
+  expiresAt: number;
+  kind: 'guest' | 'wallet';
+  subject: string;
+  wallet?: string;
+}
+
 export function getAuthToken(): string | null {
   if (typeof window === 'undefined') return null;
   return window.localStorage.getItem(TOKEN_KEY);
@@ -50,10 +57,22 @@ export function hasUsableAuthToken(token: string | null): boolean {
   return Boolean(payload?.sub && payload.exp * 1000 > Date.now() + TOKEN_EXPIRY_SKEW_MS);
 }
 
-export function signedInWallet(): string | null {
+export function currentAuthSession(): AuthSession | null {
   const payload = decodeAuthToken(getAuthToken());
-  if (!payload || payload.kind !== 'wallet' || !payload.wallet) return null;
-  return payload.wallet;
+  if (!payload || payload.exp * 1000 <= Date.now() + TOKEN_EXPIRY_SKEW_MS) return null;
+
+  const kind = payload.kind ?? (payload.wallet ? 'wallet' : 'guest');
+  return {
+    expiresAt: payload.exp,
+    kind,
+    subject: payload.sub,
+    wallet: payload.wallet,
+  };
+}
+
+export function signedInWallet(): string | null {
+  const session = currentAuthSession();
+  return session?.kind === 'wallet' && session.wallet ? session.wallet : null;
 }
 
 export function isSignedInAs(address?: string): boolean {
@@ -64,4 +83,3 @@ export function isSignedInAs(address?: string): boolean {
     return false;
   }
 }
-
