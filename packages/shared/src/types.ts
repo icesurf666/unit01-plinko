@@ -83,3 +83,20 @@ export interface FeedDrop {
   payout: number;
   ts: number;
 }
+
+// ── REST /ready ─────────────────────────────────────────────────────
+export interface SystemStatusResult {
+  status: 'ready' | 'degraded';
+  checks: {
+    store: {
+      backend: string;
+      ok: boolean;
+      error?: string;
+    };
+    redis: {
+      configured: boolean;
+      ok: boolean;
+    };
+  };
+  ts: number;
+}

@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import type { SystemStatusResult } from '@plinko/shared';
 import { redisHealth } from './redis';
 import { StoreService } from './store/store.service';
 
@@ -12,19 +13,32 @@ export class HealthController {
   }
 
   @Get('ready')
-  async ready() {
+  async ready(): Promise<SystemStatusResult> {
+    const store = await this.storeCheck();
     const checks = {
-      store: {
-        backend: this.store.backendName,
-        ok: await this.store.ready(),
-      },
+      store,
       redis: await redisHealth(),
     };
-    const degraded = checks.redis.configured && !checks.redis.ok;
+    const degraded = !checks.store.ok || (checks.redis.configured && !checks.redis.ok);
     return {
       status: degraded ? 'degraded' : 'ready',
       checks,
       ts: Date.now(),
     };
+  }
+
+  private async storeCheck(): Promise<SystemStatusResult['checks']['store']> {
+    try {
+      return {
+        backend: this.store.backendName,
+        ok: await this.store.ready(),
+      };
+    } catch (error) {
+      return {
+        backend: this.store.backendName,
+        ok: false,
+        error: error instanceof Error ? error.message : 'Store readiness check failed.',
+      };
+    }
   }
 }

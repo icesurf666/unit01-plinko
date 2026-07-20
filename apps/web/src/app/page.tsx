@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi';
 import { Topbar } from '@/widgets/topbar';
 import { Controls, HowTo, launchBall, useGameActions, useGameStore, useRisk } from '@/features/game';
 import { Feed } from '@/features/feed';
+import { SystemStatus } from '@/features/system';
 import { WalletPanel } from '@/features/wallet';
 import { initAudio } from '@/shared/lib/sound';
 import * as api from '@/shared/lib/api';
@@ -92,6 +93,7 @@ export default function Page() {
         <aside className="side">
           <Controls onDrop={handleDrop} />
           <WalletPanel onSessionChanged={refreshBalance} onError={setError} />
+          <SystemStatus />
           <Feed />
         </aside>
       </div>

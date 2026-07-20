@@ -6,6 +6,7 @@ import {
   type FeedDrop,
   type MeResult,
   type Risk,
+  type SystemStatusResult,
   type WithdrawSigned,
 } from '@plinko/shared';
 import {
@@ -114,6 +115,10 @@ export async function getMe(address?: string): Promise<MeResult> {
 
 export async function getFeedHistory(): Promise<FeedDrop[]> {
   return request<FeedDrop[]>('/feed');
+}
+
+export async function getSystemStatus(): Promise<SystemStatusResult> {
+  return request<SystemStatusResult>('/ready');
 }
 
 /** Reserves the off-chain balance and returns an EIP-712 signature for Vault.withdraw. */
