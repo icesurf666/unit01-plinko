@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
 import { and, eq, sql } from 'drizzle-orm';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import { StoreService, freshSeed, START_BALANCE, type SeedCtx } from './store.service';
+import { StoreService, freshSeed, initialBalanceForPlayer, type SeedCtx } from './store.service';
 import { makeDb, type Db, type Sql } from './db';
 import { accounts, ledgerEntries, ledgerTransactions, serverSeeds } from './schema';
 
@@ -81,11 +81,21 @@ export class LedgerStore extends StoreService implements OnModuleInit, OnModuleD
   }
 
   private async ensureSignup(addr: string): Promise<void> {
+    const initialBalance = initialBalanceForPlayer(addr);
+
     await this.db.transaction(async (tx: Tx) => {
-      await this.post(tx, 'GRANT', `signup:${addr}`, [
-        { ownerType: 'player', ownerRef: addr, amount: START_BALANCE },
-        { ownerType: 'system', ownerRef: 'house', amount: -START_BALANCE },
-      ]);
+      if (initialBalance > 0) {
+        await this.post(tx, 'GRANT', `signup:${addr}`, [
+          { ownerType: 'player', ownerRef: addr, amount: initialBalance },
+          { ownerType: 'system', ownerRef: 'house', amount: -initialBalance },
+        ]);
+        return;
+      }
+
+      await tx
+        .insert(accounts)
+        .values({ ownerType: 'player', ownerRef: addr, balance: 0 })
+        .onConflictDoNothing();
     });
     await this.db
       .insert(serverSeeds)

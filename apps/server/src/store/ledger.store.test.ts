@@ -18,17 +18,22 @@ describe.skipIf(!url)('LedgerStore (integration · Postgres)', () => {
 
   it('deposit/drop/reserve move the balance and keep the double-entry invariant', async () => {
     await store.onModuleInit(); // apply migrations
-    const addr = '0x' + Math.random().toString(16).slice(2, 12);
+    const suffix = Math.random().toString(16).slice(2, 12);
+    const guest = `guest:${suffix}`;
+    const wallet = `0x${suffix.padEnd(40, '1')}`;
 
-    expect((await store.get(addr)).balance).toBe(1000); // signup grant
-    expect(await store.applyDrop(addr, 10, 30, `d:${addr}`)).toBe(1020); // win +20
-    expect(await store.creditDeposit(addr, 50, `dep:${addr}`)).toBe(1070);
-    expect(await store.reserve(addr, 100, `wd:${addr}`)).toBe(true);
-    expect((await store.get(addr)).balance).toBe(970);
+    expect((await store.get(guest)).balance).toBe(1000); // guest demo grant
+    expect(await store.applyDrop(guest, 10, 30, `d:${guest}`)).toBe(1020); // win +20
+    expect(await store.creditDeposit(guest, 50, `dep:${guest}`)).toBe(1070);
+    expect(await store.reserve(guest, 100, `wd:${guest}`)).toBe(true);
+    expect((await store.get(guest)).balance).toBe(970);
+
+    expect((await store.get(wallet)).balance).toBe(0); // wallet must deposit real test tokens
+    expect(await store.creditDeposit(wallet, 50, `dep:${wallet}`)).toBe(50);
 
     // a repeated key does not double-apply
-    await store.applyDrop(addr, 10, 30, `d:${addr}`);
-    expect((await store.get(addr)).balance).toBe(970);
+    await store.applyDrop(guest, 10, 30, `d:${guest}`);
+    expect((await store.get(guest)).balance).toBe(970);
 
     // ── INVARIANTS (ADR-2) ──────────────────────────────────────────
     const entries = await probe.db.select().from(ledgerEntries);

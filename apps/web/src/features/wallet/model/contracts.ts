@@ -1,14 +1,14 @@
 // Addresses are injected after deployment via NEXT_PUBLIC_* env.
 import { parseIntegerInput } from '@/shared/lib/number';
 
-const ZERO = '0x0000000000000000000000000000000000000000' as const;
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const;
 
 export const CHAIN_ID = parseIntegerInput(process.env.NEXT_PUBLIC_CHAIN_ID ?? '', {
   fallback: 84532,
   min: 1,
 });
-export const TOKEN_ADDRESS = (process.env.NEXT_PUBLIC_TOKEN_ADDRESS ?? ZERO) as `0x${string}`;
-export const VAULT_ADDRESS = (process.env.NEXT_PUBLIC_VAULT_ADDRESS ?? ZERO) as `0x${string}`;
+export const TOKEN_ADDRESS = (process.env.NEXT_PUBLIC_TOKEN_ADDRESS ?? ZERO_ADDRESS) as `0x${string}`;
+export const VAULT_ADDRESS = (process.env.NEXT_PUBLIC_VAULT_ADDRESS ?? ZERO_ADDRESS) as `0x${string}`;
 
 export const tokenAbi = [
   { type: 'function', name: 'faucet', inputs: [], outputs: [], stateMutability: 'nonpayable' },

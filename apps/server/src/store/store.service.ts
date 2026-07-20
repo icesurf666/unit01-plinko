@@ -16,6 +16,10 @@ export function freshSeed(clientSeed = 'default'): SeedCtx {
 
 export const START_BALANCE = integerEnv('START_BALANCE', { defaultValue: 1000, min: 0 });
 
+export function initialBalanceForPlayer(player: string): number {
+  return player.startsWith('guest:') ? START_BALANCE : 0;
+}
+
 // Balance/seed abstraction. Implementations: MemoryStore (demo) and LedgerStore
 // (Postgres, double-entry). All methods are async — one interface for both.
 export abstract class StoreService {

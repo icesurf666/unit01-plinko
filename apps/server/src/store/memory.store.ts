@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { StoreService, freshSeed, START_BALANCE, type SeedCtx } from './store.service';
+import { StoreService, freshSeed, initialBalanceForPlayer, type SeedCtx } from './store.service';
 
 // In-memory implementation (demo without a DB). Idempotency via a Set of keys.
 interface Player {
@@ -17,7 +17,7 @@ export class MemoryStore extends StoreService {
   private ensure(addr: string): Player {
     let p = this.players.get(addr);
     if (!p) {
-      p = { balance: START_BALANCE, seed: freshSeed() };
+      p = { balance: initialBalanceForPlayer(addr), seed: freshSeed() };
       this.players.set(addr, p);
     }
     return p;

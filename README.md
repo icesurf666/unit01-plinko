@@ -28,6 +28,7 @@ Base Sepolia:
 - Direct contract interaction from the frontend with wagmi, viem, and RainbowKit.
 - EIP-2612 permit deposits and server-signed EIP-712 withdrawals.
 - A backend-owned ledger model with an in-memory demo store and a Postgres/Drizzle implementation.
+- Guest sessions receive demo credits; SIWE wallet sessions start from zero and are credited by indexed on-chain deposits.
 - Real-time event broadcasting over Socket.IO.
 - Shared TypeScript schemas and deterministic fairness utilities used by both client and server.
 - Contract tests with Foundry, including fuzz coverage.
@@ -175,6 +176,7 @@ Important variables:
 | `NEXT_PUBLIC_VAULT_ADDRESS` | Web | PlinkoVault contract |
 | `NEXT_PUBLIC_WC_PROJECT_ID` | Web | WalletConnect project ID |
 | `JWT_SECRET` | Server | HMAC secret for signed JWT sessions |
+| `START_BALANCE` | Server | Guest-only demo credits; wallet accounts start from 0 |
 | `CORS_ORIGINS` | Server | Comma-separated browser origins allowed to call the API |
 | `SIWE_DOMAIN` | Server | Domain included in the SIWE message |
 | `SIWE_URI` | Server | URI included in the SIWE message |

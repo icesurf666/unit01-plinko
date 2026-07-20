@@ -208,18 +208,39 @@ a {
   align-items: center;
   gap: 18px;
 }
+.balances {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
 .balance {
   text-align: right;
   line-height: 1.1;
+  white-space: nowrap;
 }
 .balance .big {
   font-family: var(--font-mono);
   font-weight: 500;
   font-size: 1.15rem;
 }
+.balance-unit {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
 .balance .sub {
   font-size: 0.72rem;
   color: var(--text-dim);
+}
+.wallet-balance {
+  padding-right: 14px;
+  border-right: 1px solid var(--glass-stroke-hi);
+}
+.wallet-balance .big {
+  color: var(--secondary);
+}
+.wallet-balance.is-error .big {
+  color: var(--danger);
+  font-size: 0.92rem;
 }
 .wallet {
   font-family: var(--font-mono);
@@ -593,11 +614,26 @@ a {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr auto;
   }
+  .topbar-right {
+    gap: 10px;
+  }
+  .balances {
+    gap: 10px;
+  }
+  .wallet-balance {
+    padding-right: 10px;
+  }
   .side {
     border-left: none;
     border-top: 1px solid var(--glass-stroke);
   }
   .feed {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .wallet-balance {
     display: none;
   }
 }
