@@ -177,7 +177,7 @@ Important variables:
 | `NEXT_PUBLIC_CHAIN_ID` | Web | Base Sepolia is `84532` |
 | `NEXT_PUBLIC_TOKEN_ADDRESS` | Web | UNIT token contract |
 | `NEXT_PUBLIC_VAULT_ADDRESS` | Web | PlinkoVault contract |
-| `NEXT_PUBLIC_WC_PROJECT_ID` | Web | WalletConnect project ID |
+| `NEXT_PUBLIC_WC_PROJECT_ID` | Web | Optional 32-character Reown/WalletConnect project ID for QR/mobile wallets; leave empty for injected wallets only |
 | `JWT_SECRET` | Server | HMAC secret for signed JWT sessions |
 | `START_BALANCE` | Server | Guest-only demo credits; wallet accounts start from 0 |
 | `CORS_ORIGINS` | Server | Comma-separated browser origins allowed to call the API |

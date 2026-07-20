@@ -1,6 +1,12 @@
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import { injectedWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
+import { createConfig, http } from 'wagmi';
 import { baseSepolia } from 'wagmi/chains';
 import { defineChain } from 'viem';
+
+const APP_NAME = 'UNIT-01 Plinko';
+const VALID_WALLETCONNECT_PROJECT_ID = /^[a-f0-9]{32}$/i;
+const CONNECTOR_ONLY_PROJECT_ID = '00000000000000000000000000000000';
 
 // Local anvil chain for development without a deployment.
 export const anvil = defineChain({
@@ -10,10 +16,32 @@ export const anvil = defineChain({
   rpcUrls: { default: { http: ['http://localhost:8545'] } },
 });
 
-export const wagmiConfig = getDefaultConfig({
-  appName: 'UNIT-01 Plinko',
-  // WalletConnect projectId — not critical for injected wallets (MetaMask).
-  projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID ?? 'UNIT01_PLINKO_DEMO',
-  chains: [baseSepolia, anvil],
+const walletConnectProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID?.trim();
+const hasWalletConnect = Boolean(
+  walletConnectProjectId && VALID_WALLETCONNECT_PROJECT_ID.test(walletConnectProjectId),
+);
+
+const chains = [baseSepolia, anvil] as const;
+
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Wallets',
+      wallets: hasWalletConnect ? [injectedWallet, walletConnectWallet] : [injectedWallet],
+    },
+  ],
+  {
+    appName: APP_NAME,
+    projectId: hasWalletConnect ? walletConnectProjectId! : CONNECTOR_ONLY_PROJECT_ID,
+  },
+);
+
+export const wagmiConfig = createConfig({
+  chains,
+  connectors,
+  transports: {
+    [baseSepolia.id]: http(),
+    [anvil.id]: http(),
+  },
   ssr: true,
 });

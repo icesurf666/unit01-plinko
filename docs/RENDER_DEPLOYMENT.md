@@ -53,11 +53,13 @@ NEXT_PUBLIC_API_URL=https://unit01-plinko.onrender.com
 NEXT_PUBLIC_CHAIN_ID=84532
 NEXT_PUBLIC_TOKEN_ADDRESS=0xf9Ea47bebfbF8B51040d342a1EAdbd6E19381fc7
 NEXT_PUBLIC_VAULT_ADDRESS=0x41408D9A4987428EdA217aF5e6C9C5BE06680E9E
-NEXT_PUBLIC_WC_PROJECT_ID=<walletconnect project id>
+NEXT_PUBLIC_WC_PROJECT_ID=<optional 32-character Reown/WalletConnect project id>
 ```
 
 Do not include leading/trailing spaces or quotes in Vercel env values. A value like
 ` https://unit01-plinko.onrender.com` breaks WebSocket URLs as `wss://%20https/...`.
+Do not use placeholders such as `UNIT01_PLINKO_DEMO` for `NEXT_PUBLIC_WC_PROJECT_ID`:
+leave it empty unless you have a real project ID.
 
 ## Common Failure
 
