@@ -17,7 +17,11 @@ import {
   signedInWallet,
 } from './auth-session';
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+function apiBaseUrl(): string {
+  return (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001').trim().replace(/\/+$/, '');
+}
+
+const API = apiBaseUrl();
 
 export class ApiError extends Error {
   constructor(

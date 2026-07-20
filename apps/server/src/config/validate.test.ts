@@ -51,4 +51,17 @@ describe('validateRuntimeConfig', () => {
     });
     expect(() => validateRuntimeConfig()).not.toThrow();
   });
+
+  it('accepts production override flags with whitespace and different casing', () => {
+    prodEnv({
+      DATABASE_URL: undefined,
+      ALLOW_MEMORY_STORE_IN_PRODUCTION: ' TRUE ',
+      CORS_ORIGINS: 'http://localhost:3000',
+      ALLOW_INSECURE_ORIGINS_IN_PRODUCTION: ' true ',
+      REDIS_URL: 'redis://localhost:6379',
+      ALLOW_INSECURE_REDIS_IN_PRODUCTION: 'TRUE',
+    });
+
+    expect(() => validateRuntimeConfig()).not.toThrow();
+  });
 });

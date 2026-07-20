@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22.0.0 <23.0.0"
+  },
   "description": "UNIT-01 Plinko — GambleFi plinko (hybrid on-chain/off-chain, provably fair)",
   "scripts": {
     "build:shared": "pnpm --filter @plinko/shared build",

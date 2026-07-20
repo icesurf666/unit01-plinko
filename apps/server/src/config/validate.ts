@@ -6,6 +6,10 @@ function isZeroAddress(value?: string): boolean {
   return !value || /^0x0{40}$/i.test(value);
 }
 
+function envFlag(key: string): boolean {
+  return process.env[key]?.trim().toLowerCase() === 'true';
+}
+
 export function validateRuntimeConfig(): void {
   if (process.env.NODE_ENV !== 'production') return;
 
@@ -25,18 +29,18 @@ export function validateRuntimeConfig(): void {
     throw new Error(`Missing required production env: ${required.join(', ')}`);
   }
 
-  if (!process.env.DATABASE_URL && process.env.ALLOW_MEMORY_STORE_IN_PRODUCTION !== 'true') {
+  if (!process.env.DATABASE_URL && !envFlag('ALLOW_MEMORY_STORE_IN_PRODUCTION')) {
     throw new Error('DATABASE_URL is required in production unless ALLOW_MEMORY_STORE_IN_PRODUCTION=true.');
   }
 
-  if (process.env.REDIS_URL?.startsWith('redis://') && process.env.ALLOW_INSECURE_REDIS_IN_PRODUCTION !== 'true') {
+  if (process.env.REDIS_URL?.startsWith('redis://') && !envFlag('ALLOW_INSECURE_REDIS_IN_PRODUCTION')) {
     throw new Error('Use rediss:// in production or set ALLOW_INSECURE_REDIS_IN_PRODUCTION=true explicitly.');
   }
 
   const insecureOrigins = process.env.CORS_ORIGINS!.split(',')
     .map((origin) => origin.trim())
     .filter((origin) => origin && !origin.startsWith('https://'));
-  if (insecureOrigins.length && process.env.ALLOW_INSECURE_ORIGINS_IN_PRODUCTION !== 'true') {
+  if (insecureOrigins.length && !envFlag('ALLOW_INSECURE_ORIGINS_IN_PRODUCTION')) {
     throw new Error(
       `Production CORS origins must use https://: ${insecureOrigins.join(', ')}`,
     );

@@ -8,6 +8,9 @@ services:
     buildCommand: pnpm install && pnpm --filter @plinko/server build
     startCommand: node apps/server/dist/main.js
     envVars:
+      # Pin Node because Render's default moves over time.
+      - key: NODE_VERSION
+        value: "22.22.0"
       - key: CHAIN_ID
         value: "84532"
       - key: CONFIRMATIONS
@@ -46,4 +49,7 @@ services:
       - key: REDIS_URL
         sync: false
       - key: DATABASE_URL
+        sync: false
+      # Demo only. Prefer DATABASE_URL for a persistent ledger.
+      - key: ALLOW_MEMORY_STORE_IN_PRODUCTION
         sync: false
