@@ -19,7 +19,21 @@ export function WalletPanel({
   onSessionChanged?: () => void | Promise<void>;
   onError?: (message: string) => void;
 }) {
-  const { address, connected, authenticated, status, signIn, faucet, deposit, withdraw } = useVault();
+  const {
+    address,
+    connected,
+    authenticated,
+    chainId,
+    contractsConfigured,
+    expectedChainId,
+    onExpectedChain,
+    status,
+    signIn,
+    switchToExpectedChain,
+    faucet,
+    deposit,
+    withdraw,
+  } = useVault();
   const refreshTimers = useRef<number[]>([]);
   const [session, setSession] = useState(() => currentAuthSession());
   const [sessionStatus, setSessionStatus] = useState('');
@@ -91,6 +105,7 @@ export function WalletPanel({
   const walletSessionMismatch = Boolean(
     address && session?.kind === 'wallet' && session.wallet && !authenticated,
   );
+  const walletActionsDisabled = !contractsConfigured || !onExpectedChain;
 
   if (!connected) {
     return (
@@ -123,6 +138,21 @@ export function WalletPanel({
             ? 'Wallet switched. Sign in with this wallet or sign out the old session.'
             : 'Wallet connected. Sign a SIWE message to use vault actions.'}
       </div>
+      {!contractsConfigured && (
+        <div className="auth-state warn">
+          Contract env is incomplete. Set token and vault addresses before using vault actions.
+        </div>
+      )}
+      {!onExpectedChain && (
+        <div className="auth-state warn network-state">
+          <span>
+            Wrong network: {chainId ?? 'unknown'}. Expected {expectedChainId}.
+          </span>
+          <button type="button" onClick={() => void switchToExpectedChain()}>
+            Switch
+          </button>
+        </div>
+      )}
       {sessionLabel && (
         <div className="session-state">
           <span>{sessionLabel}</span>
@@ -151,6 +181,7 @@ export function WalletPanel({
       </div>
       <div className="wp-btns">
         <button
+          disabled={walletActionsDisabled}
           onClick={() =>
             void runWalletAction(faucet, 'Faucet submitted. Wallet balance refreshes after confirmation.')
           }
@@ -158,7 +189,7 @@ export function WalletPanel({
           Faucet
         </button>
         <button
-          disabled={!authenticated}
+          disabled={!authenticated || walletActionsDisabled}
           onClick={() =>
             void runWalletAction(
               () => deposit(amount),
@@ -169,7 +200,7 @@ export function WalletPanel({
           Deposit
         </button>
         <button
-          disabled={!authenticated}
+          disabled={!authenticated || walletActionsDisabled}
           onClick={() =>
             void runWalletAction(
               () => withdraw(amount),

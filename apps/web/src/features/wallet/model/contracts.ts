@@ -9,6 +9,9 @@ export const CHAIN_ID = parseIntegerInput(process.env.NEXT_PUBLIC_CHAIN_ID ?? ''
 });
 export const TOKEN_ADDRESS = (process.env.NEXT_PUBLIC_TOKEN_ADDRESS ?? ZERO_ADDRESS) as `0x${string}`;
 export const VAULT_ADDRESS = (process.env.NEXT_PUBLIC_VAULT_ADDRESS ?? ZERO_ADDRESS) as `0x${string}`;
+export const HAS_TOKEN_ADDRESS = TOKEN_ADDRESS !== ZERO_ADDRESS;
+export const HAS_VAULT_ADDRESS = VAULT_ADDRESS !== ZERO_ADDRESS;
+export const HAS_VAULT_CONTRACTS = HAS_TOKEN_ADDRESS && HAS_VAULT_ADDRESS;
 
 export const tokenAbi = [
   { type: 'function', name: 'faucet', inputs: [], outputs: [], stateMutability: 'nonpayable' },

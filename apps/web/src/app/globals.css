@@ -467,6 +467,24 @@ a {
   border-color: rgba(255, 209, 102, 0.36);
   background: rgba(255, 209, 102, 0.08);
 }
+.network-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.network-state button {
+  border: none;
+  background: none;
+  color: #ffd166;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 0;
+}
+.network-state button:hover {
+  color: var(--accent);
+}
 .session-state {
   display: flex;
   align-items: center;
