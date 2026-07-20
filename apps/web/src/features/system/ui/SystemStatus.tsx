@@ -2,20 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import type { SystemStatusResult } from '@plinko/shared';
+import { redisLabel, storeLabel, systemReady } from '../model/systemStatus';
 import { getSystemStatus } from '@/shared/lib/api';
 
 const REFRESH_MS = 30_000;
-
-function storeLabel(status: SystemStatusResult): string {
-  return status.checks.store.backend === 'postgres-ledger'
-    ? 'Postgres ledger'
-    : status.checks.store.backend;
-}
-
-function redisLabel(status: SystemStatusResult): string {
-  if (!status.checks.redis.configured) return 'Redis optional';
-  return status.checks.redis.ok ? 'Redis ready' : 'Redis degraded';
-}
 
 export function SystemStatus() {
   const [status, setStatus] = useState<SystemStatusResult | null>(null);
@@ -44,7 +34,7 @@ export function SystemStatus() {
     };
   }, []);
 
-  const ready = status?.status === 'ready' && !error;
+  const ready = systemReady(status, error);
 
   return (
     <div className="system-status">
