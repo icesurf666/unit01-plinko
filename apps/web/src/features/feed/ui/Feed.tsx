@@ -64,9 +64,11 @@ export function Feed() {
   return (
     <div className="feed">
       <div className="h">Live Drop Feed</div>
-      {items.map((d, i) => (
-        <FeedRow key={`${d.ts}-${d.addr}-${i}`} drop={d} index={i} />
-      ))}
+      <div className="feed-list">
+        {items.map((d, i) => (
+          <FeedRow key={`${d.ts}-${d.addr}-${i}`} drop={d} index={i} />
+        ))}
+      </div>
     </div>
   );
 }

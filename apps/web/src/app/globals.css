@@ -509,10 +509,26 @@ a {
   overflow: hidden;
 }
 .feed .h {
+  flex: 0 0 auto;
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-dim);
+}
+.feed-list {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 3px;
+  scrollbar-color: rgba(157, 255, 0, 0.35) transparent;
+  scrollbar-width: thin;
+}
+.feed-list::-webkit-scrollbar {
+  width: 6px;
+}
+.feed-list::-webkit-scrollbar-thumb {
+  background: rgba(157, 255, 0, 0.28);
+  border-radius: 999px;
 }
 .feed-row {
   display: grid;
