@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import type { DropRequest, DropResult, MeResult, ResolvedDrop } from '@plinko/shared';
+import type { DropRequest, DropResult, FeedDrop, MeResult, ResolvedDrop } from '@plinko/shared';
 import type { SeedCtx } from '../store/store.service';
 import { StoreService } from '../store/store.service';
 import { AuditService } from '../observability/audit.service';
@@ -62,6 +62,10 @@ export class GameService {
 
   async rotateSeed(player: string) {
     return this.store.rotate(player);
+  }
+
+  feedHistory(): FeedDrop[] {
+    return this.feed.history();
   }
 
   private buildDropResult({

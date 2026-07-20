@@ -7,9 +7,16 @@ import { corsOrigin } from '../cors';
 @WebSocketGateway({ cors: { origin: corsOrigin, credentials: true } })
 export class FeedGateway {
   @WebSocketServer() server!: Server;
+  private readonly recent: FeedDrop[] = [];
 
   broadcastDrop(d: FeedDrop): void {
+    this.recent.unshift(d);
+    this.recent.splice(30);
     this.server.emit('drop', d);
     if (d.multiplier >= BIG_WIN_MULT) this.server.emit('big_win', d);
+  }
+
+  history(): FeedDrop[] {
+    return [...this.recent];
   }
 }

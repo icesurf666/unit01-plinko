@@ -3,6 +3,7 @@ import {
   type AuthNonceResult,
   type AuthTokenResult,
   type DropResult,
+  type FeedDrop,
   type MeResult,
   type Risk,
   type WithdrawSigned,
@@ -103,6 +104,10 @@ export async function drop(stake: number, risk: Risk): Promise<DropResult> {
 export async function getMe(address?: string): Promise<MeResult> {
   await ensureSession(address);
   return request<MeResult>('/me', { headers: await authHeaders() });
+}
+
+export async function getFeedHistory(): Promise<FeedDrop[]> {
+  return request<FeedDrop[]>('/feed', { headers: await authHeaders() });
 }
 
 /** Reserves the off-chain balance and returns an EIP-712 signature for Vault.withdraw. */

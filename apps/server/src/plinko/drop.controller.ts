@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Get, Headers, Post, UseGuards } from '@nestjs/common';
-import { dropRequestSchema, type DropResult, type MeResult } from '@plinko/shared';
+import { dropRequestSchema, type FeedDrop, type DropResult, type MeResult } from '@plinko/shared';
 import { AuthGuard } from '../auth/auth.guard';
 import { Player } from '../auth/player.decorator';
 import { GameService } from './game.service';
@@ -13,6 +13,11 @@ export class DropController {
   @Get('me')
   async me(@Player() player: string): Promise<MeResult> {
     return this.game.me(player);
+  }
+
+  @Get('feed')
+  async feed(): Promise<FeedDrop[]> {
+    return this.game.feedHistory();
   }
 
   @Post('drop')
